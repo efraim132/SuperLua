@@ -1,0 +1,31 @@
+class Person
+  function new(self, name, age)
+    self.name = name
+    self.age = age
+  end
+
+  function say_hello(self)
+    print("Hello, my name is " .. self.name .. " and I am " .. self.age .. " years old.")
+  end
+
+  function get_name(self)
+    return self.name
+  end
+end
+
+class Dog
+  function new(self, name, breed)
+    self.name = name
+    self.breed = breed
+  end
+
+  function bark(self)
+    print(self.name .. " says Woof!")
+  end
+end
+
+local person = Person:new("Alice", 30)
+person:say_hello()
+
+local dog = Dog:new("Buddy", "Golden Retriever")
+dog:bark()

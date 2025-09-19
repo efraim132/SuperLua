@@ -1,0 +1,131 @@
+class Calculator
+  function new(self, name)
+    self.name = name
+    self.history = {}
+    self.result = 0
+    print("Calculator '" .. self.name .. "' initialized")
+  end
+
+  function add(self, a, b)
+    local result = a + b
+    self:recordOperation("ADD", a, b, result)
+    self.result = result
+    return result
+  end
+
+  function multiply(self, a, b)
+    local result = a * b
+    self:recordOperation("MUL", a, b, result)
+    self.result = result
+    return result
+  end
+
+  function power(self, base, exponent)
+    local result = base ^ exponent
+    self:recordOperation("POW", base, exponent, result)
+    self.result = result
+    return result
+  end
+
+  function recordOperation(self, op, a, b, result)
+    local entry = op .. ": " .. a .. " and " .. b .. " = " .. result
+    table.insert(self.history, entry)
+  end
+
+  function showHistory(self)
+    print("=== " .. self.name .. " History ===")
+    for i = 1, #self.history do
+      print(i .. ". " .. self.history[i])
+    end
+    print("Last result: " .. self.result)
+  end
+
+  function getLastResult(self)
+    return self.result
+  end
+end
+
+class Vector2D
+  function new(self, x, y)
+    self.x = x or 0
+    self.y = y or 0
+  end
+
+  function add(self, other)
+    return Vector2D:new(self.x + other.x, self.y + other.y)
+  end
+
+  function subtract(self, other)
+    return Vector2D:new(self.x - other.x, self.y - other.y)
+  end
+
+  function dot(self, other)
+    return self.x * other.x + self.y * other.y
+  end
+
+  function magnitude(self)
+    return math.sqrt(self.x * self.x + self.y * self.y)
+  end
+
+  function normalize(self)
+    local mag = self:magnitude()
+    if mag > 0 then
+      return Vector2D:new(self.x / mag, self.y / mag)
+    else
+      return Vector2D:new(0, 0)
+    end
+  end
+
+  function toString(self)
+    return "(" .. self.x .. ", " .. self.y .. ")"
+  end
+
+  function scale(self, factor)
+    self.x = self.x * factor
+    self.y = self.y * factor
+  end
+end
+
+-- Demo: Calculator usage
+print("=== Calculator Demo ===")
+local calc = Calculator:new("MathBot")
+local sum = calc:add(15, 25)
+print("15 + 25 = " .. sum)
+
+local product = calc:multiply(7, 8)
+print("7 * 8 = " .. product)
+
+local power = calc:power(2, 10)
+print("2^10 = " .. power)
+
+calc:showHistory()
+
+-- Demo: Vector2D usage
+print("\n=== Vector2D Demo ===")
+local v1 = Vector2D:new(3, 4)
+local v2 = Vector2D:new(1, 2)
+
+print("Vector 1: " .. v1:toString())
+print("Vector 2: " .. v2:toString())
+
+local v3 = v1:add(v2)
+print("v1 + v2 = " .. v3:toString())
+
+local dotProduct = v1:dot(v2)
+print("v1 · v2 = " .. dotProduct)
+
+local magnitude = v1:magnitude()
+print("Magnitude of v1: " .. magnitude)
+
+local normalized = v1:normalize()
+print("Normalized v1: " .. normalized:toString())
+
+-- Modify v2 in place
+print("Scaling v2 by 3...")
+v2:scale(3)
+print("v2 after scaling: " .. v2:toString())
+
+-- Chain operations
+print("Chain example: Calculator result + Vector magnitude")
+local chainResult = calc:getLastResult() + v1:magnitude()
+print("Last calc result (" .. calc:getLastResult() .. ") + v1 magnitude (" .. v1:magnitude() .. ") = " .. chainResult)
