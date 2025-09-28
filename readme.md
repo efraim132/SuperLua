@@ -1,34 +1,67 @@
-How I Built SuperLua: Adding Object-Oriented Programming to Lua
+# SuperLua Transpiler
 
-This is my journey of creating a transpiler that brings class-based object-oriented programming to Lua. I wanted to make Lua feel more like modern programming languages while still running on ComputerCraft's vanilla Lua runtime.
+Transform your SuperLua code with classes into standard Lua compatible with ComputerCraft.
+
+## Web Interface (Recommended)
+
+The easiest way to use the SuperLua Transpiler is through the web interface:
+
+1. **Open the web interface**: Open `transpiler_web.html` in any modern web browser
+2. **Enter your code**: Type or paste your SuperLua code in the left panel
+3. **Transpile**: Click "Transpile Code" or press `Ctrl+Enter`
+4. **Get results**: The converted Lua code will appear in the right panel
+5. **Try examples**: Click the example buttons to see sample SuperLua classes
+
+### Features
+- **Live transpilation**: Instant conversion in your browser
+- **Dark theme**: GitHub-inspired interface
+- **Example code**: Built-in Vector, Person, and Calculator class examples
+- **Keyboard shortcuts**: `Ctrl+Enter` to transpile
+- **Copy-paste friendly**: Easy to copy results for use in ComputerCraft
 
 ## What is SuperLua?
 
-SuperLua is a simple language extension that adds class syntax to Lua. I created it because writing object-oriented code in pure Lua can be messy with all the metatable boilerplate. SuperLua lets me write clean, readable classes that transpile to efficient Lua code.
-
-Here's what SuperLua looks like:
+SuperLua adds object-oriented programming to Lua with a simple class syntax:
 
 ```superlua
-class Calculator
-  function new(self, name)
-    self.name = name
-    self.result = 0
-  end
-
-  function add(self, a, b)
-    self.result = a + b
-    return self.result
-  end
-
-  function getResult(self)
-    return self.result
-  end
+class Vector
+    function new(self, x, y)
+        self.x = x or 0
+        self.y = y or 0
+    end
+    
+    function add(self, other)
+        return Vector:new(self.x + other.x, self.y + other.y)
+    end
 end
 
-local calc = Calculator:new("MathBot")
-calc:add(5, 3)
-print("Result: " .. calc:getResult())
+-- Usage
+local v1 = Vector:new(3, 4)
+local v2 = Vector:new(1, 2) 
+local v3 = v1:add(v2)
 ```
+
+This gets converted to standard Lua using metatables:
+
+```lua
+Vector = {}
+Vector.__index = Vector
+
+function Vector:new(x, y)
+  local self = setmetatable({__class = 'Vector'}, Vector)
+  self.x = x or 0
+  self.y = y or 0
+  return self
+end
+
+function Vector:add(other)
+  return Vector:new(self.x + other.x, self.y + other.y)
+end
+```
+
+## How I Built SuperLua: Adding Object-Oriented Programming to Lua
+
+This is my journey of creating a transpiler that brings class-based object-oriented programming to Lua. I wanted to make Lua feel more like modern programming languages while still running on ComputerCraft's vanilla Lua runtime.
 
 ## How the Transpiler Works
 
@@ -133,3 +166,27 @@ ComputerCraft uses Lua 5.2/5.3 without any extensions. My transpiler produces va
 4. Your object-oriented code runs natively!
 
 The transpiler bridges the gap between modern programming practices and ComputerCraft's constraints, letting me write better code without sacrificing compatibility.
+
+## Python CLI Usage
+
+If you prefer command line usage:
+
+### Installation
+```bash
+pip install -r requirements.txt
+```
+
+### Usage
+```bash
+python transpiler.py input.slua output.lua
+```
+
+## File Structure
+
+- `transpiler_web.html` - Web interface (recommended)
+- `transpiler.py` - Python transpiler core
+- `sample.slua` - Example SuperLua file
+- `advanced_math.slua` - Advanced example with multiple classes
+- `requirements.txt` - Python dependencies
+
+Feel free to submit issues, feature requests, or pull requests to improve the SuperLua transpiler!
